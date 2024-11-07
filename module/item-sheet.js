@@ -30,6 +30,8 @@ export class DCCItemSheet extends ItemSheet {
         return 'systems/dcc/templates/item-sheet-skill.html'
       case 'treasure':
         return 'systems/dcc/templates/item-sheet-treasure.html'
+      case 'grigri':
+        return 'systems/dcc/templates/item-sheet-grigri.html'
       case 'equipment':
       case 'ammunition':
       case 'mount':

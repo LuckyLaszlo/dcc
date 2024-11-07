@@ -122,7 +122,18 @@
                     </div>
                 </div>
                 <div class="speed">
+
+                    {{!-- // LUCKY --}}
+                    {{#if (greaterEqualThan system.encumbrance.excess system.encumbrance.excessLimitMax)}}
+                        <label for="system.attributes.speed.value" style="color:rgb(255, 0, 0)">{{localize "DCC.Speed"}}</label>
+                    {{else if (greaterEqualThan system.encumbrance.excess system.encumbrance.excessLimit2)}}
+                        <label for="system.attributes.speed.value" style="color:rgb(188, 0, 0)">{{localize "DCC.Speed"}}</label>
+                    {{else if (greaterEqualThan system.encumbrance.excess system.encumbrance.excessLimit1)}}
+                        <label for="system.attributes.speed.value" style="color:rgb(122, 0, 0)">{{localize "DCC.Speed"}}</label>
+                    {{else}}
                     <label for="system.attributes.speed.value">{{localize "DCC.Speed"}}</label>
+                    {{/if}}
+
                     <input class="speed-value" type="text" id="system.attributes.speed.value"
                            name="system.attributes.speed.value"
                            value="{{distanceFormat system.attributes.speed.value}}"

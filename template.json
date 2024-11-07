@@ -70,8 +70,8 @@
             "value": 0
           },
           "speed": {
-            "value": 30,
-            "base": 30,
+            "value": 9,
+            "base": 9,
             "special": ""
           }
         },
@@ -116,7 +116,8 @@
             "value": 0,
             "min": 0,
             "max": 10
-          }
+          },
+          "notes_spells": ""
         },
         "skills": {
           "findSecretDoors": {
@@ -128,6 +129,7 @@
           "weapons": [],
           "ammunition": [],
           "armor": [],
+          "grigri": [],
           "equipment": [],
           "mount": []
         }
@@ -234,6 +236,7 @@
         "skills": {
           "sneakAndHide": {
             "label": "DCC.SneakAndHide",
+            "ability": "agl",
             "value": "+3"
           }
         }
@@ -243,7 +246,7 @@
           "critRange": "20"
         },
         "class": {
-          "luckyWeapon": null
+          "luckyWeapon": ""
         }
       },
       "wizard": {
@@ -259,7 +262,7 @@
         "details": {
         },
         "class": {
-          "luckyWeapon": null
+          "luckyWeapon": ""
         },
         "skills": {
           "shieldBash": {
@@ -345,6 +348,7 @@
       "weapon",
       "ammunition",
       "armor",
+      "grigri",
       "equipment",
       "mount",
       "spell",
@@ -363,7 +367,7 @@
       },
       "physicalItem": {
         "quantity": 1,
-        "weight": 0,
+        "weight": 1,
         "equipped": true,
         "identified": true
       },
@@ -425,6 +429,14 @@
         "physicalItem",
         "currency"
       ]
+    },
+    "grigri": {
+      "templates": [
+        "itemDescription",
+        "physicalItem",
+        "currency"
+      ],
+      "checkPenalty": "-0"
     },
     "mount": {
       "templates": [

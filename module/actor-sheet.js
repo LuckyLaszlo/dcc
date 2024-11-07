@@ -111,6 +111,13 @@ class DCCActorSheet extends ActorSheet {
       })
     }
 
+    // Lucky spells notes
+    data.notesSpellsHTML = await TextEditor.enrichHTML(this.actor.system.details.notes_spells, {
+      async: true,
+      relativeTo: this.actor,
+      secrets: this.actor.isOwner
+    })
+
     return data
   }
 
@@ -142,12 +149,13 @@ class DCCActorSheet extends ActorSheet {
     const skills = []
     const treasure = []
     const coins = []
+    const grigri = []
 
     let inventory = this.actor.items
-    if (sheetData.system.config.sortInventory) {
+    /* if (sheetData.system.config.sortInventory) {
       // Shallow copy and lexical sort
       inventory = [...inventory].sort((a, b) => a.name.localeCompare(b.name))
-    }
+    } */
 
     // Iterate through items, allocating to containers
     const removeEmptyItems = sheetData.system.config.removeEmptyItems
@@ -188,6 +196,8 @@ class DCCActorSheet extends ActorSheet {
         }
       } else if (i.type === 'skill') {
         skills.push(i)
+      } else if (i.type === 'grigri') {
+        grigri.push(i)
       } else if (i.type === 'treasure') {
         let treatAsCoins = false
 
@@ -242,6 +252,140 @@ class DCCActorSheet extends ActorSheet {
     actorData.spells = spells
     actorData.skills = skills
     actorData.treasure = treasure
+    actorData.grigri = grigri
+
+    // LUCKY
+    const gear = [];
+    const gearNoEncumbrance = [];
+    const gearUnequipped  = [];
+
+    for (let i of equipment)
+    {
+      if (!i.system.equipped)
+      {
+        gearUnequipped.push(i);
+      }
+      else
+      {
+        if (i.system.weight <= 0) {
+          gearNoEncumbrance.push(i);
+        }
+        else {
+          gear.push(i);
+        }
+      }
+    }
+
+    // items encumbrance and inventorySlots evaluation
+    const allItems = [].concat(weapons.melee, weapons.ranged, armor, grigri, equipment);
+    let pos = 1;
+    for (let i of allItems)
+    {
+      if (!i.system.equipped || i.system.weight <= 0) {
+        i.system.inventorySlotsString = "`";
+        continue;
+      }
+
+      i.system.inventorySlotsString = pos.toString();
+      if (i.system.weight > 1) {
+        i.system.inventorySlotsString += "-" + (pos + i.system.weight-1).toString();
+      }
+      pos += i.system.weight;
+    }
+    sheetData.system.encumbrance = {
+      value: pos - 1,
+      max: 10 + sheetData.system.abilities.str.mod
+    }
+
+    /* pos = 1;
+    for (let i of gearNoEncumbrance)
+    {
+      i.system.inventorySlotsString = pos.toString();
+      pos++;
+    } */
+
+
+    // add coins encumbrance
+    let gp = parseInt(this.actor.system.currency.gp);
+    gp = isNaN(gp) ? 0 : gp;
+    let sp = parseInt(this.actor.system.currency.sp);
+    sp = isNaN(sp) ? 0 : sp;
+    let cp = parseInt(this.actor.system.currency.cp);
+    cp = isNaN(cp) ? 0 : cp;
+    
+    const coinsEncumbrance = Math.floor( (gp + sp + cp) / 200 );
+    sheetData.system.encumbrance.value += coinsEncumbrance;
+
+    // encumbrance penalty
+    const excess = sheetData.system.encumbrance.value - sheetData.system.encumbrance.max;
+    const excessLimit1 = 1;
+    const excessLimit2 = 4;
+    const excessLimitMax = 8;
+    if (excess > 0)
+    {
+      let speedPenalty = 0;
+      let checkPenalty = 0;
+
+      if (excess >= excessLimit1) {
+        speedPenalty += -1.5;
+        checkPenalty += -1;
+      }
+      if (excess >= excessLimit2) {
+        speedPenalty += -1.5;
+        checkPenalty += -1;
+        // -1d
+      }
+      if (excess >= excessLimitMax) {
+        speedPenalty = -sheetData.system.attributes.speed.value;
+      }
+
+      if (sheetData.system.config.computeSpeed) {
+        sheetData.system.attributes.ac.speedPenalty += speedPenalty;
+        sheetData.system.attributes.speed.value += speedPenalty;
+      }
+      if (sheetData.system.config.computeCheckPenalty) {
+        sheetData.system.attributes.ac.checkPenalty += checkPenalty;
+      }
+    }
+    sheetData.system.encumbrance.excess = excess;
+    sheetData.system.encumbrance.excessLimit1 = excessLimit1;
+    sheetData.system.encumbrance.excessLimit2 = excessLimit2;
+    sheetData.system.encumbrance.excessLimitMax = excessLimitMax;
+
+    // Move items between array
+    const moveItems = (src, dst) => {
+      let i = src.length - 1;
+      while (i >= 0)
+      {
+        if (!src[i].system.equipped) {
+          dst.push(src[i]);
+          src.splice(i, 1);
+        }
+        --i;
+      }
+    }
+    const moveItemsAndUndefined = (src, dst) => {
+      let i = src.length - 1;
+      while (i >= 0)
+      {
+        if (!src[i].system.equipped) {
+          dst.push(src[i]);
+          src[i] = undefined;
+        }
+        --i;
+      }
+    }
+    moveItemsAndUndefined(weapons.melee, gearUnequipped);
+    moveItemsAndUndefined(weapons.ranged, gearUnequipped);
+    moveItems(grigri, gearUnequipped);
+    // moveItems(armor, gearUnequipped);
+
+    // Assign and return
+    sheetData.gear = gear;
+    sheetData.gearNoEncumbrance = gearNoEncumbrance;
+    sheetData.gearUnequipped = gearUnequipped;
+    sheetData.grigri = grigri;
+    // sheetData.allGear = gear.concat([gearNoEncumbrance, gearUnequipped]);
   }
 
   /* -------------------------------------------- */
@@ -253,8 +397,19 @@ class DCCActorSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return
 
+    // LUCKY
+    // if (this.actor.isOwner) {
+      let handler = ev => this._onDragStart(ev);
+      html.find('.gear-draggable').each((index, element) => {
+        element.setAttribute("draggable", true);
+        element.addEventListener("dragstart", handler, false);
+      });
+    // }
+
+    
     // Drag event handler
-    const dragHandler = ev => this._onDragStart(ev)
+    // const dragHandler = ev => this._onDragStartDccCustom(ev);
+    const dragHandler = ev => this._onDragStart(ev);
 
     // Helper function to make things draggable
     const makeDraggable = function (index, element) {
@@ -416,7 +571,7 @@ class DCCActorSheet extends ActorSheet {
    * Create a macro when a rollable element is dragged
    * @param {Event} event
    * @override */
-  _onDragStart (event) {
+  _onDragStartDccCustom (event) {
     let dragData = null
 
     // Handle the various draggable elements on the sheet
@@ -786,6 +941,35 @@ class DCCActorSheet extends ActorSheet {
 
   /** @override */
   async _updateObject (event, formData) {
+		console.log("_updateObject"); // LUCKY, a revoir 
+		// Handle items updates
+		if (event.currentTarget)
+		{
+			const expanded = foundry.utils.expandObject(formData)
+			if (expanded.itemUpdates)
+			{
+				const itemElement = $(event.currentTarget).parents(".item");
+				if (itemElement.length === 1)
+				{
+					const itemId = itemElement.data("itemId");
+					const item = this.actor.items.get(itemId);
+					if (item)
+					{
+						const updateData = expanded.itemUpdates[itemId];
+						await item.update(updateData);
+					}
+				}
+				else if (itemElement.length > 1) {
+					console.log("error: multiples parents found !");
+				}
+			}
+		}
+		// Standard update
+		return super._updateObject(event, formData);
+		// this.object.update(formData); // same thing as "super._updateObject"
+	}
+
+/*   async _updateObject (event, formData) {
     // Handle owned item updates separately
     if (event.currentTarget) {
       let parentElement = event.currentTarget.parentElement
@@ -811,7 +995,7 @@ class DCCActorSheet extends ActorSheet {
 
     // Update the Actor
     return this.object.update(formData)
-  }
+  } */
 }
 
 export default DCCActorSheet

@@ -43,7 +43,7 @@
         <div class="tab" data-group="primary" data-tab="class">
             <div class="class">
                 <div class="skills-container">
-                    <div class="split-50-25-25" data-skill="sneakAndHide">
+                    <div class="split-50-50" data-skill="sneakAndHide">
                         <label class="skill-check rollable" for="system.skills.sneakAndHide.value">{{localize "DCC.SneakAndHide"}}</label>
                         <input type="text" id="system.skills.sneakAndHide.value" name="system.skills.sneakAndHide.value" value="{{system.skills.sneakAndHide.value}}" data-dtype="String"/>
                     </div>
@@ -54,14 +54,14 @@
                   {{#dccPackExists "dcc-core-book.dcc-core-journals"}}
                   <li>{{{system.class.classLink}}}</li>
                   {{/dccPackExists}}
-                  <li>{{localize "DCC.InfravisionHalfling"}}</li>
+                  {{!-- <li>{{localize "DCC.InfravisionHalfling"}}</li>
                     <ul class="class-note flexcol">
                       <li><a class="external-link" href="https://github.com/foundryvtt-dcc/dcc/wiki/Infravision-and-Torches"><i class="fas fa-link"></i> {{localize "DCC.InfravisionLink"}}</a></li>
-                    </ul>
+                    </ul> --}}
                   <li>{{localize "DCC.Lucky"}}</li>
                   <li>{{localize "DCC.TwoWeaponFighting"}}
                     <ul class="class-note flexcol">
-                      <li>{{localize "DCC.HalflingTwoWeaponActionDie"}}</li>
+                      {{!-- <li>{{localize "DCC.HalflingTwoWeaponActionDie"}}</li> --}}
                       <li>{{localize "DCC.HalflingTwoWeaponCrit"}}</li>
                       <li>{{localize "DCC.HalflingTwoWeaponFumble"}}</li>
                       <li>{{localize "DCC.HalflingTwoWeaponHighAg"}}</li>

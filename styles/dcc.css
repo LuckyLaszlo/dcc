@@ -1,3 +1,46 @@
+.center {
+  text-align: center !important;
+}
+
+.item-controls {
+  flex: 0 0 60px;
+  padding-left: 10px;
+}
+
+.item-list-header .item-slots {
+  font-size: 1rem;
+  border: 0;
+}
+
+.item-slots {
+  flex: 0 0 30px;
+  margin-right: 12px;
+  border: 2px #eeede0;
+  border-style: groove;
+}
+
+.dcc .item-list .item-name {
+  flex: 1 0 1px;
+}
+
+.dcc .gear-equipped {
+  flex: 0 0 20px;
+  margin: 0 8px 0 0;
+}
+
+.dcc .notes-spells {
+  border: 2px groove #eeede0;
+  font-size: 14px;
+  height: 90%;
+  /* height: 98%; */
+  line-height: 24px;
+  padding: 2px;
+}
+
+/* ----------------------------------------- */
+/*  <--- Lucky                               */
+/* ----------------------------------------- */
+
 .grid,
 .grid-2col {
   display: grid;
@@ -1394,7 +1437,7 @@
 .dcc.item .sheet-body .description {
   border: 2px groove #eeede0;
   grid-column: 1/span 3;
-  grid-row: 2;
+  /* grid-row: 2; */
 }
 .dcc.item .sheet-body .armor-header-extras {
   display: grid;

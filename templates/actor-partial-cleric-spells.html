@@ -1,5 +1,20 @@
 {{!-- Spells Tab --}}
 <div class="tab spells" data-group="primary" data-tab="spells">
+
+    <div class="skills-container">
+      <div class="split-50-50" data-ability="per">
+          <label class="spell-check rollable" for="system.class.spellCheck">{{localize "DCC.SpellCheck"}}</label>
+          <input type="text" id="system.class.spellCheck" name="system.class.spellCheck" value="{{system.class.spellCheck}}" data-dtype="String"/>
+      </div>
+    </div>
+
+    <div class="notes-spells">
+        {{editor notesSpellsHTML target="system.details.notes_spells" button=true editable=editable engine="prosemirror" collaborate=true}}
+    </div>
+</div>
+
+
+{{!-- <div class="tab spells" data-group="primary" data-tab="spells">
     <div class="spells-container-cleric">
         <ol class="item-list">
             <li class="item flexrow item-list-header">
@@ -37,4 +52,4 @@
             {{/each}}
         </ol>
     </div>
-</div>
+</div> --}}

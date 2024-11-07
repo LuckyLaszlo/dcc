@@ -25,60 +25,10 @@
 
     <section class="sheet-body item treasure">
       <div class="value-row">
-        {{#if allowResolve}}
-        <div class="rollable roll-button">&nbsp;</div>
-        {{/if}}
-        <div class="resource">
-          <label class="resource-label">{{localize "DCC.CurrencyPP"}}</label>
-          <input type="text" name="system.value.pp" value="{{system.value.pp}}" data-dtype="String"/>
-          {{#if allowConversions}}
-          <div class="conversions">
-            <div class="rollable right-arrow-button" data-currency="pp">&nbsp;</div>
-          </div>
-          {{/if}}
-        </div>
-        <div class="resource">
-          <label class="resource-label">{{localize "DCC.CurrencyEP"}}</label>
-          <input type="text" name="system.value.ep" value="{{system.value.ep}}" data-dtype="String"/>
-          {{#if allowConversions}}
-          <div class="conversions">
-            <div class="rollable left-arrow-button" data-currency="ep">&nbsp;</div>
-            <div class="rollable right-arrow-button" data-currency="ep">&nbsp;</div>
-          </div>
-          {{/if}}
-        </div>
-        <div class="resource">
-          <label class="resource-label">{{localize "DCC.CurrencyGP"}}</label>
-          <input type="text" name="system.value.gp" value="{{system.value.gp}}" data-dtype="String"/>
-          {{#if allowConversions}}
-          <div class="conversions">
-            <div class="rollable left-arrow-button" data-currency="gp">&nbsp;</div>
-            <div class="rollable right-arrow-button" data-currency="gp">&nbsp;</div>
-          </div>
-          {{/if}}
-        </div>
-        <div class="resource">
-          <label class="resource-label">{{localize "DCC.CurrencySP"}}</label>
-          <input type="text" name="system.value.sp" value="{{system.value.sp}}" data-dtype="String"/>
-          {{#if allowConversions}}
-          <div class="conversions">
-            <div class="rollable left-arrow-button" data-currency="sp">&nbsp;</div>
-            <div class="rollable right-arrow-button" data-currency="sp">&nbsp;</div>
-          </div>
-          {{/if}}
-        </div>
-        <div class="resource">
-          <label class="resource-label">{{localize "DCC.CurrencyCP"}}</label>
-          <input type="text" name="system.value.cp" value="{{system.value.cp}}" data-dtype="String"/>
-          {{#if allowConversions}}
-          <div class="conversions">
-            <div class="rollable left-arrow-button" data-currency="cp">&nbsp;</div>
-          </div>
-          {{/if}}
-        </div>
+        {{!-- Left an empty div or CSS broken --}}
       </div>
       <div class="description">
-        {{editor descriptionHTML target="system.description.value" button=true editable=editable}}
+        {{editor descriptionHTML target="system.description.value" button=true editable=editable engine="prosemirror" collaborate=true}}
       </div>
     </section>
 </form>

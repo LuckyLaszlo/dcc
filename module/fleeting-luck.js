@@ -382,7 +382,10 @@ class FleetingLuck {
         FleetingLuck._clear(user.id)
       }
     })
-    FleetingLuck.addChatMessage(game.i18n.localize('DCC.FleetingLuckClearMessage'))
+    
+    // LUCKY
+    const user = game.users.get(id);
+    FleetingLuck.addChatMessage(game.i18n.localize('DCC.FleetingLuckClearMessage', { user: user.name }))
   }
 
   /**

@@ -137,18 +137,42 @@ Hooks.once('init', async function () {
 
     // Handlebars helper for distances with an apostrophe
     Handlebars.registerHelper('distanceFormat', function (object) {
-        const fields = String(object).match(/(-?\d+)'?/)
-        if (fields) {
-            return fields[1] + '\''
-        } else {
-            return ''
-        }
+    // const fields = String(object).match(/(-?\d+)'?/)
+    // if (fields) {
+    //   return fields[1] + '\''
+    // } else {
+    //   return ''
+    // }
+
+    // LUCKY, in meter
+    let float = parseFloat(object);
+    if (isNaN(float)) {
+      return "-0m";
+    }
+    return float.toString() + "m";
     })
 
     // Handlebars helper to check if a pack exists
     Handlebars.registerHelper('dccPackExists', function (pack, options) {
         return new Handlebars.SafeString(game.packs.get(pack) ? options.fn(this) : options.inverse(this))
     })
+
+  Handlebars.registerHelper('equal', function(a, b) {
+    return a == b;
+  });
+  Handlebars.registerHelper('greaterThan', function(a, b) {
+    return a > b;
+  });
+  Handlebars.registerHelper('lessThan', function(a, b) {
+    return a < b;
+  });
+  Handlebars.registerHelper('greaterEqualThan', function(a, b) {
+    return a >= b;
+  });
+  Handlebars.registerHelper('lessEqualThan', function(a, b) {
+    return a <= b;
+  });
+
 })
 
 /* -------------------------------------------- */

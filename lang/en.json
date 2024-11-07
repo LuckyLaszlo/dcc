@@ -11,6 +11,9 @@
   "TYPES.Item.treasure": "Treasure",
   "TYPES.Item.weapon": "Weapon",
 
+  "ITEM.Item.grigri": "Gri-gri",
+  "DCC.Grigri": "Gri-gri",
+
   "Dungeon Crawl Classics": "Dungeon Crawl Classics",
   "DCC.AC": "AC",
   "DCC.AbbreviationCR": "CR",

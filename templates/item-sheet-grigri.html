@@ -1,0 +1,57 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <div class="flexrow">
+                <div class="item-name">
+                    <h1 class="item-name charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+                </div>
+                <label class="item-type" for="name">{{localize item.typeString}}</label>
+            </div>
+            <div class="flexrow" style="gap: 10px;">
+
+              <div class="resource flex0">
+                <label class="resource-label">{{localize "DCC.Weight"}}</label>
+                <input type="text" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>
+              </div>
+
+              {{!-- <span class="flex1"></span> --}}
+
+              <div class="resource flex0">
+                <label class="resource-label" for="system.checkPenalty">{{localize "DCC.ArmorPropertiesCheckPenalty"}}</label>
+                <input type="text" name="system.checkPenalty"
+                      value="{{numberFormat system.checkPenalty decimals=0 sign=true}}"
+                      placeholder="-0" data-dtype="Number"/>
+              </div>
+
+              {{!-- <span class="flex1"></span> --}}
+              
+              <div class="resource flex1">
+                <input type="checkbox" name="system.equipped" data-dtype="Boolean" {{checked system.equipped}}/>
+                <label class="resource-label" for="system.equipped">{{localize "DCC.ItemPropertiesEquipped"}}</label>
+              </div>
+
+            </div>
+        </div>
+    </header>
+
+    <section class="sheet-body item">
+
+        {{!-- <div class="resource flex1">
+          <input type="checkbox" name="system.equipped" data-dtype="Boolean" {{checked system.equipped}}/>
+          <label class="resource-label" for="system.equipped">{{localize "DCC.ItemPropertiesEquipped"}}</label>
+        </div> --}}
+
+        {{!-- <div class="value-row">
+          Left an empty div or CSS broken
+        </div> --}}
+
+        <div class="armor-summary">
+          <label class="resource-label" for="system.description.summary">{{localize "DCC.ItemSummary"}}</label>
+          <input type="text" name="system.description.summary" value="{{system.description.summary}}" data-dtype="String"/>
+        </div>
+        <div class="description">
+          {{editor descriptionHTML target="system.description.value" button=true editable=editable engine="prosemirror" collaborate=true}}
+        </div>
+    </section>
+</form>

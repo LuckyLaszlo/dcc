@@ -17,7 +17,30 @@
       </div>
     </div>
     {{/if}}
-  
+
+    {{!-- // LUCKY --}}
+    {{!-- Encumbrance tracker --}}
+    <ol class="items-list">
+      <li class="item flexrow item-list-header">
+        {{#if (greaterEqualThan system.encumbrance.excess system.encumbrance.excessLimitMax)}}
+          <div class="item-slots" style="color:rgb(255, 0, 0)">{{system.encumbrance.value}}/{{system.encumbrance.max}}</div>
+          <span style="color:rgb(255, 0, 0)"> max (>{{system.encumbrance.excessLimitMax}}) </span>
+        {{else if (greaterEqualThan system.encumbrance.excess system.encumbrance.excessLimit2)}}
+          <div class="item-slots" style="color:rgb(188, 0, 0)">{{system.encumbrance.value}}/{{system.encumbrance.max}}</div>
+          <span> -1d / -3m / (>{{system.encumbrance.excessLimit2}}) </span>
+        {{else if (greaterEqualThan system.encumbrance.excess system.encumbrance.excessLimit1)}}
+          <div class="item-slots" style="color:rgb(122, 0, 0)">{{system.encumbrance.value}}/{{system.encumbrance.max}}</div>
+          <span> -1.5m / (>{{system.encumbrance.excessLimit1}}) </span>
+        {{else}}
+          <div class="item-slots">{{system.encumbrance.value}}/{{system.encumbrance.max}}</div>
+          <span></span>
+        {{/if}}
+          <span> Malus jet total
+            <span style="font-size:large; font-style:"> {{system.attributes.ac.checkPenalty}} </span>
+          </span>
+      </li>
+    </ol>
+
     {{#if isZeroSheet}}
     {{else}}
       {{!-- Melee Weapons --}}
@@ -26,10 +49,11 @@
           <input class="weapon-checkbox" type="checkbox"
                 name="itemUpdates.{{id}}.system.equipped"
                 data-dtype="Boolean" {{checked weapon.system.equipped}}/>                
-          <div class="item-image weapon-draggable flexrow"><img class="weapon-draggable flex1" src="{{weapon.img}}" title="{{weapon.name}}" width="24" height="24"/></div>
-          <div class="rollable weapon-button weapon-draggable">&nbsp;</div>
+          <h4 class="item-slots item-image center weapon-draggable" data-item-id="{{id}}">{{weapon.system.inventorySlotsString}}</h4> {{!-- // LUCKY --}}
+          {{!-- <div class="item-image weapon-draggable flexrow" data-item-id="{{id}}"><img class="weapon-draggable flex1" src="{{weapon.img}}" title="{{weapon.name}}" width="24" height="24"/></div> --}}
+          <div class="rollable weapon-button">&nbsp;</div> {{!-- // LUCKY --}}
           {{#if canBackstab}}
-          <div class="rollable backstab-button weapon-draggable">&nbsp;</div>
+          <div class="rollable backstab-button">&nbsp;</div> {{!-- // LUCKY --}}
           {{/if}}
           <input class="weapon-name" type="text"
                  name="itemUpdates.{{id}}.name"
@@ -40,7 +64,7 @@
           <input class="weapon-damage" type="text"
                  name="itemUpdates.{{id}}.system.damage"
                  value="{{weapon.system.damage}}"/>
-          {{#if weapon.melee}}
+          {{#if weapon.system.melee}} {{!-- // LUCKY --}}
           <input class="weapon-notes" type="text"
                  name="itemUpdates.{{id}}.system.description.summary"
                  value="{{{weapon.system.description.summary}}}"/>
@@ -77,7 +101,9 @@
                   </span>
               </li>
               {{#each actor.weapons.melee as |weapon index|}}
+                {{#if weapon}} {{!-- // LUCKY --}}
                 {{> weaponRow weapon=weapon id=weapon._id type='m' index=index canBackstab=../system.config.showBackstab}}
+                {{/if}} {{!-- // LUCKY --}}
               {{/each}}
           </ol>
       </div>
@@ -113,7 +139,8 @@
           <input class="armor-equipped" type="checkbox"
                  name="itemUpdates.{{id}}.system.equipped"
                  data-dtype="Boolean" {{checked armor.system.equipped}}/>
-          <div class="item-image item-draggable flexrow"><img class="item-draggable flex1" src="{{armor.img}}" title="{{armor.name}}" width="24" height="24"/></div>
+          <h4 class="item-slots item-image center item-draggable" data-item-id="{{id}}">{{armor.system.inventorySlotsString}}</h4> {{!-- // LUCKY --}}
+          {{!-- <div class="item-image item-draggable flexrow"><img class="item-draggable flex1" src="{{armor.img}}" title="{{armor.name}}" width="24" height="24"/></div> --}}
           <input class="armor-name" type="text"
                  name="itemUpdates.{{id}}.name"
                  value="{{armor.name}}"/>
@@ -153,10 +180,46 @@
           {{> armorRow armor=armor id=armor._id index=index}}
           {{/each}}
       </ol>
+
+      {{!-- // LUCKY --}}
+      {{!-- Gri-Gri / Buff --}}
+      {{!-- <div class="item-heading">Gri-Gri / Talismans / Conditions / ...</div> --}}
+      <div class="item-heading">Gri-Gri / Talismans / Conditions</div>
+      <ol class="item-list">
+        <li class="item flexrow item-list-header">
+          <span class="gear-equipped" title="{{localize 'DCC.Equipped'}}"><i class="fa-solid fa-hand-holding"></i></span>                  
+          <div class="item-name flex3"></div>
+          <span class="armor-notes">{{localize "DCC.Notes"}}</span>
+          <div class="item-controls ">
+            <a class="item-control item-create" title="{{localize 'DCC.ItemCreate'}}" data-type="grigri"><i class="fas fa-plus"></i>{{localize 'DCC.Add'}}</a>
+          </div>
+        </li>
+        {{#each grigri as |item id|}}
+          <li class="item flexrow" data-item-id="{{item._id}}">
+            {{!-- <div class="item-image">
+              <a class="rollable" data-roll-type="item"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></a>
+            </div> --}}
+            <input class="gear-equipped" type="checkbox"
+                  name="itemUpdates.{{item._id}}.system.equipped"
+                  data-dtype="Boolean" {{checked item.system.equipped}}/>
+            <h4 class="item-slots center gear-draggable" data-item-id="{{item._id}}">{{item.system.inventorySlotsString}}</h4>
+            <input class="item-name flex3 center" type="text"
+                  name="itemUpdates.{{item._id}}.name"
+                  value="{{item.name}}" />
+            <input class="armor-notes" type="text"
+                  name="itemUpdates.{{item._id}}.system.description.summary"
+                  value="{{{item.system.description.summary}}}"/>
+            <div class="item-controls ">
+              <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+          </li>
+        {{/each}}
+      </ol>
     {{/if}}
 
     {{!-- Other items --}}
-    {{#* inline "ItemHeader"}}
+    {{!-- {{#* inline "ItemHeader"}}
     <li class="item flexrow item-list-header">
       <div class="item-image"></div>
       <div class="item-name">{{localize "DCC.ItemName"}}</div>
@@ -176,35 +239,110 @@
             <a class="item-control item-delete" title="{{localize 'DCC.ItemDelete'}}"><i class="fas fa-trash"></i></a>
         </div>
     </li>
-    {{/inline}}
-    
+    {{/inline}} --}}
+
     {{!-- Equipment --}}
     <div class="item-heading">{{localize "DCC.Equipment"}}</div>
+    {{!-- gear --}}
     <ol class="item-list">
+      <li class="item flexrow item-list-header">
+        <span class="gear-equipped" title="{{localize 'DCC.Equipped'}}"><i class="fa-solid fa-hand-holding"></i></span>
+        <div class="item-name flex3"></div>
+        <div class="item-controls ">
+          <a class="item-control item-create" title="{{localize 'DCC.ItemCreate'}}" data-type="equipment"><i class="fas fa-plus"></i>{{localize 'DCC.Add'}}</a>
+        </div>
+      </li>
+      {{#each gear as |item id|}}
+        <li class="item flexrow" data-item-id="{{item._id}}">
+          {{!-- <div class="item-image">
+            <a class="rollable" data-roll-type="item"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></a>
+          </div> --}}
+          <input class="gear-equipped" type="checkbox"
+                name="itemUpdates.{{item._id}}.system.equipped"
+                data-dtype="Boolean" {{checked item.system.equipped}}/>
+          <h4 class="item-slots center gear-draggable" data-item-id="{{item._id}}">{{item.system.inventorySlotsString}}</h4>
+          <input class="item-name flex3 center" type="text"
+                name="itemUpdates.{{item._id}}.name"
+                value="{{item.name}}" />
+          <div class="item-controls ">
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+
+    {{!-- gearNoEncumbrance --}}
+    <ol class="item-list">
+      <li class="item flexrow item-list-header">
+        <span class="gear-equipped" title="{{localize 'DCC.Equipped'}}">{{!-- <i class="fa-solid fa-hand-holding"></i> --}}</span>                  
+        <i class="fas fa-feather item-slots center"></i>
+        <div class="item-name flex3"></div>
+        <div class="item-controls ">
+          <a class="item-control item-create" title="{{localize 'DCC.ItemCreate'}}" data-type="equipment" data-weight="0"><i class="fas fa-plus"></i>{{localize 'DCC.Add'}}</a>
+        </div>
+      </li>
+      {{#each gearNoEncumbrance as |item id|}}
+        <li class="item flexrow" data-item-id="{{item._id}}">
+          {{!-- <div class="item-image">
+            <a class="rollable" data-roll-type="item"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></a>
+          </div> --}}
+          {{!-- <i class="fas fa-feather center"></i> --}}
+          <input class="gear-equipped" type="checkbox"
+                name="itemUpdates.{{item._id}}.system.equipped"
+                data-dtype="Boolean" {{checked item.system.equipped}}/>
+          <h4 class="item-slots center gear-draggable" data-item-id="{{item._id}}">{{item.system.inventorySlotsString}}</h4>
+          <input class="item-name flex3 center" type="text"
+                name="itemUpdates.{{item._id}}.name"
+                value="{{item.name}}" />
+          <div class="item-controls ">
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+
+    {{!-- gearUnequipped --}}
+    <ol class="item-list">
+      <li class="item flexrow item-list-header">
+        <span class="gear-equipped" title="{{localize 'DCC.Equipped'}}">{{!-- <i class="fa-solid fa-hand-holding"></i> --}}</span>
+        <i class="fas fa-house-lock item-slots center"></i>
+        {{!-- <i class="fas fa-house item-slots center"></i> --}}
+        {{!-- <i class="fas fa-horse-head item-slots center"></i> --}}
+        {{!-- <i class="fas fa-lock item-slots center"></i> --}}
+        {{!-- <i class="fas fa-toolbox item-slots center"></i> --}}
+        <div class="item-name flex3"></div>
+        <div class="item-controls ">
+          {{!-- <a class="item-control item-create" title="{{localize 'DCC.ItemCreate'}}" data-type="equipment" data-equipped=""><i class="fas fa-plus"></i>{{localize 'DCC.Add'}}</a> --}}
+        </div>
+      </li>
+      {{#each gearUnequipped as |item id|}}
+        <li class="item flexrow" data-item-id="{{item._id}}">
+          <input class="gear-equipped" type="checkbox"
+                name="itemUpdates.{{item._id}}.system.equipped"
+                data-dtype="Boolean" {{checked item.system.equipped}}/>
+          <h4 class="item-slots center gear-draggable" data-item-id="{{item._id}}">{{item.system.inventorySlotsString}}</h4>
+          <input class="item-name flex3 center" type="text"
+                name="itemUpdates.{{item._id}}.name"
+                value="{{item.name}}" />
+          <div class="item-controls ">
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+
+    {{!-- <ol class="item-list">
         {{> ItemHeader type="equipment"}}
         {{#each actor.equipment as |equipment id|}}
         {{> ItemRow item=equipment id=id}}
         {{/each}}
-    </ol>
-    {{!-- Ammunition --}}
-    <div class="item-heading">{{localize "DCC.Ammunition"}}</div>
-    <ol class="item-list">
-        {{> ItemHeader type="ammunition"}}
-        {{#each actor.ammunition as |ammunition id|}}
-        {{> ItemRow item=ammunition id=id}}
-        {{/each}}
-    </ol>
-    {{!-- Mounts --}}
-    <div class="item-heading">{{localize "DCC.Mounts"}}</div>
-    <ol class="item-list">
-        {{> ItemHeader type="mount"}}
-        {{#each actor.mounts as |mount id|}}
-        {{> ItemRow item=mount id=id}}
-        {{/each}}
-    </ol>
+    </ol> --}}
 
     {{!-- Treasure --}}
-    {{#* inline "TreasureRow"}}
+    {{!-- {{#* inline "TreasureRow"}}
     <li class="item item-draggable flexrow" data-item-id="{{item._id}}">
         <div class="item-image flexrow"><img class="item-draggable flex1" src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></div>
         <h4 class="item-name">{{item.name}}</h4>
@@ -219,36 +357,33 @@
             <a class="item-control item-delete" title="{{localize 'DCC.ItemDelete'}}"><i class="fas fa-trash"></i></a>
         </div>
     </li>
-    {{/inline}}
+    {{/inline}} --}}
     <div class="item-heading">{{localize "DCC.Treasure"}}</div>
     <ol class="item-list">
         <li class="item flexrow item-list-header">
           <div class="item-image"></div>
-          <div class="item-name">{{localize "DCC.ItemName"}}</div>
-          <div class="item-is-coins"></div>
-          <div class="item-pp">{{localize "DCC.CurrencyShortPP"}}</div>
-          <div class="item-ep">{{localize "DCC.CurrencyShortEP"}}</div>
+          {{!-- <div class="item-name">{{localize "DCC.ItemName"}}</div> --}}
+          {{!-- <div class="item-is-coins"></div> --}}
+          {{!-- <div class="item-pp">{{localize "DCC.CurrencyShortPP"}}</div> --}}
+          {{!-- <div class="item-ep">{{localize "DCC.CurrencyShortEP"}}</div> --}}
           <div class="item-gp">{{localize "DCC.CurrencyShortGP"}}</div>
           <div class="item-sp">{{localize "DCC.CurrencyShortSP"}}</div>
           <div class="item-cp">{{localize "DCC.CurrencyShortCP"}}</div>
-          <div class="item-controls">
+          {{!-- <div class="item-controls">
             <a class="item-control item-create" title="{{localize 'DCC.ItemCreate'}}" data-type="treasure"><i class="fas fa-plus"></i> {{localize "DCC.Add"}}</a>
-          </div>
+          </div> --}}
         </li>
         <li class="item flexrow">
           <div class="item-image flexrow"><img class="flex1" src="systems/dcc/styles/images/game-icons-net/coins.svg" title="{{localize 'DCC.Funds'}}" width="24" height="24"/></div>
-            <h4 class="item-name">{{localize 'DCC.Funds'}}</h4>
-            <h4 class="item-is-coins"></h4>
-            <input class="item-pp currency-field" type="text" name="system.currency.pp" placeholder="0" value="{{numberFormat system.currency.pp decimals=0 sign=false}}" data-dtype="number"/>
-            <input class="item-ep currency-field" type="text" name="system.currency.ep" placeholder="0" value="{{numberFormat system.currency.ep decimals=0 sign=false}}" data-dtype="number"/>
+            {{!-- <h4 class="item-name">{{localize 'DCC.Funds'}}</h4> --}}
+            {{!-- <h4 class="item-is-coins"></h4> --}}
+            {{!-- <input class="item-pp currency-field" type="text" name="system.currency.pp" placeholder="0" value="{{numberFormat system.currency.pp decimals=0 sign=false}}" data-dtype="number"/> --}}
+            {{!-- <input class="item-ep currency-field" type="text" name="system.currency.ep" placeholder="0" value="{{numberFormat system.currency.ep decimals=0 sign=false}}" data-dtype="number"/> --}}
             <input class="item-gp currency-field" type="text" name="system.currency.gp" placeholder="0" value="{{numberFormat system.currency.gp decimals=0 sign=false}}" data-dtype="number"/>
             <input class="item-sp currency-field" type="text" name="system.currency.sp" placeholder="0" value="{{numberFormat system.currency.sp decimals=0 sign=false}}" data-dtype="number"/>
             <input class="item-cp currency-field" type="text" name="system.currency.cp" placeholder="0" value="{{numberFormat system.currency.cp decimals=0 sign=false}}" data-dtype="number"/>
-            <div class="item-controls" />
+            {{!-- <div class="item-controls" /> --}}
         </li>
-        {{#each actor.treasure as |treasure id|}}
-        {{> TreasureRow item=treasure id=id}}
-        {{/each}}
     </ol>
   </div>
 </div>

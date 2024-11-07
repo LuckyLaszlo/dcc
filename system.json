@@ -1,9 +1,14 @@
 {
+  "flags": {
+    "hotReload": {
+      "extensions": ["css", "html", "hbs", "json"]
+    }
+  },
   "id": "dcc",
   "name": "dcc",
-  "title": "Dungeon Crawl Classics",
+  "title": "(Lucky) Dungeon Crawl Classics",
   "description": "Dungeon Crawl Classics from Goodman Games",
-  "version": "0.46.0",
+  "version": "0.47.0",
   "minimumCoreVersion": "12",
   "compatibility": {
     "maximum": "12",
@@ -46,21 +51,31 @@
       "label": "User Guide",
       "path": "packs/dcc-userguide.db",
       "system": "dcc",
-      "type": "JournalEntry"
+      "type": "JournalEntry",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "dcc-macros",
       "label": "DCC Macros",
       "path": "packs/dcc-macros.db",
       "system": "dcc",
-      "type": "Macro"
+      "type": "Macro",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "relationships": {
     "systems": [],
     "requires": [],
     "conflicts": [],
-    "flags": {}
+    "flags": {}  
   },
   "grid": {
     "distance": 5,
@@ -71,9 +86,8 @@
   "socket": true,
   "initiative": "@attributes.init.die + @attributes.init.value",
   "url": "https://github.com/foundryvtt-dcc/dcc",
-  "manifest": "https://github.com/foundryvtt-dcc/dcc/releases/download/v0.46.0/system.json",
-  "download": "https://github.com/foundryvtt-dcc/dcc/releases/download/v0.46.0/dcc.zip",
-  "protected": false,
+  "manifest": "https://github.com/foundryvtt-dcc/dcc/releases/download/v0.47.0/system.json",
+  "download": "https://github.com/foundryvtt-dcc/dcc/releases/download/v0.47.0/dcc.zip",
   "bugs": "https://github.com/foundryvtt-dcc/dcc/issues",
   "license": "LICENSE.txt"
 }

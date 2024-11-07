@@ -487,12 +487,15 @@ DCC.skillTables = {
 
 // Default actor images
 DCC.defaultActorImages = {
-  default: 'systems/dcc/styles/images/actor.webp'
+  default: 'systems/dcc/styles/images/actor.webp',
+  NPC: 'systems/dcc/styles/images/actor-npc-token.webp',
+  Player: 'systems/dcc/styles/images/actor.webp'
 }
 
 // Default item tokens
 DCC.defaultItemImages = {
   default: 'systems/dcc/styles/images/item.webp',
+  grigri: 'systems/dcc/styles/images/grigri.webp',
   armor: 'systems/dcc/styles/images/armor.webp',
   spell: 'systems/dcc/styles/images/spell.webp',
   treasure: 'systems/dcc/styles/images/coins.webp',

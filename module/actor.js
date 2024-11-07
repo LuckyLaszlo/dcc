@@ -74,15 +74,15 @@ class DCCActor extends Actor {
     // Compute AC if required
     if (config.computeAC || config.computeSpeed) {
       const baseACAbility = data.abilities[config.baseACAbility] || { mod: 0 }
-      const baseSpeed = parseInt(data.attributes.speed.base)
+      const baseSpeed = parseFloat(data.attributes.speed.base)
       const abilityMod = baseACAbility.mod
       const abilityLabel = baseACAbility.label
       let armorBonus = 0
       let speedPenalty = 0
       for (const armorItem of this.itemTypes.armor) {
         if (armorItem.system.equipped) {
-          armorBonus += parseInt(armorItem.system.acBonus || '0')
-          speedPenalty += parseInt(armorItem.system.speed || '0')
+          armorBonus += parseFloat(armorItem.system.acBonus || '0')
+          speedPenalty += parseFloat(armorItem.system.speed || '0')
         }
       }
       if (config.computeAC) {
@@ -365,6 +365,11 @@ class DCCActor extends Actor {
         type: 'Modifier',
         label: game.i18n.localize('DCC.Initiative'),
         formula: init
+      },
+      { // LUCKY: add agl.mod mod to initiative
+        type: 'Modifier',
+        label: game.i18n.localize(this.system.abilities.agl.label),
+        formula: this.system.abilities.agl.mod
       }
     ]
 
@@ -473,6 +478,22 @@ class DCCActor extends Actor {
     const modifierLabel = game.i18n.localize(save.label)
     const flavor = `${modifierLabel} ${game.i18n.localize('DCC.Save')}`
     options.title = flavor
+    
+    // LUCKY: add @abilities mod to roll
+    let abilitieMod = 0;
+    let abilitieModLabel = "";
+    if (saveId == "frt") {
+      abilitieMod = this.system.abilities.sta.mod;
+      abilitieModLabel = game.i18n.localize(this.system.abilities.sta.label);
+    }
+    else if (saveId == "ref") {
+      abilitieMod = this.system.abilities.agl.mod;
+      abilitieModLabel = game.i18n.localize(this.system.abilities.agl.label);
+    }
+    else if (saveId == "wil") {
+      abilitieMod = this.system.abilities.per.mod;
+      abilitieModLabel = game.i18n.localize(this.system.abilities.per.label);
+    }
 
     // Collate terms for the roll
     const terms = [
@@ -484,6 +505,11 @@ class DCCActor extends Actor {
         type: 'Modifier',
         label: modifierLabel,
         formula: save.value
+      },
+      { // LUCKY
+        type: 'Modifier',
+        label: abilitieModLabel,
+        formula: abilitieMod
       }
     ]
 
@@ -564,6 +590,15 @@ class DCCActor extends Actor {
         formula
       })
     }
+
+    // LUCKY: add @abilities mod to roll (superflu en 0.47)
+    // if (ability) {
+    //   terms.push({
+    //     type: 'Modifier',
+    //     label: game.i18n.localize(this.system.abilities[ability].label),
+    //     formula: this.system.abilities[ability].mod
+    //   })
+    // }
 
     if (skill.useDeed && this.system.details.lastRolledAttackBonus) {
       terms.push({
@@ -723,6 +758,15 @@ class DCCActor extends Actor {
         apply: applyCheckPenalty
       }
     ]
+
+    // LUCKY: add @abilities mod to roll
+    if (ability) {
+      terms.push({
+        type: 'Modifier',
+        label: game.i18n.localize(this.system.abilities[options.abilityId].label),
+        formula: this.system.abilities[options.abilityId].mod
+      })
+    }
 
     // If we're a non-cleric show the spellburn UI
     if (!isIdolMagic) {
